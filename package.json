@@ -1,5 +1,5 @@
 {
-  "name": "r159-discord-bot",
+  "name": "discord-bot",
   "version": "1.0.0",
   "description": "A Discord bot for use with your friends",
   "main": "index.js",

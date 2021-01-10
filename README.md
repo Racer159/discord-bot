@@ -5,7 +5,7 @@ A Discord bot written in TypeScript for use with you and your friends.
 
 Configuration is located in the `config/` dirrectory and can be changed according to the `config` docs [here](https://www.npmjs.com/package/config).
 
-```json
+```js
 {
     "DISCORDTOKEN": "", // The token to be used by your Discord bot
     "GIPHYTOKEN": "", // The giphy token to lookup and translate gifs

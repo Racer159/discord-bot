@@ -17,6 +17,7 @@ import nutrition = require('./apis/nutrition');
 import translate = require('./apis/translate');
 import weather = require('./apis/weather');
 import wolfram = require('./apis/wolfram');
+import norris = require('./apis/norris');
 
 // Setup the Tokenizer and Discord
 const tokenizer = new natural.WordTokenizer();
@@ -80,13 +81,15 @@ client.on('message', async (msg) => {
                 reply = await animals.cat();
             } else if (words.check(`${BOTNAME} random fox`, tokens )) {
                 reply = await animals.fox();
+            } else if (words.check(`${BOTNAME} norris`, tokens )){
+                reply = await norris.norris()
             } else if (words.check(`${BOTNAME} insult`, tokens )) {
                 tokens = tokens.splice(2);
                 reply = internal.insult(tokens, msg.author.username);
             } else if (words.check(`${BOTNAME} decide`, tokens )) {
                 tokens = tokens.splice(2);
                 reply = internal.decide(tokens);
-            } else {
+            }  else {
                 tokens = tokens.splice(1);
                 reply = await wolfram.search(tokens);
             }

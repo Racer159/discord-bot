@@ -61,6 +61,6 @@ const eightBallOpts = [ 'It is certain', 'It is decidedly so', 'Without a doubt'
 
 export function help(): string {
     return 'Ask me any of the following using `' + BOTNAME + '` followed by:\n\n```'
-                 + 'lunch [me]\ncalories <food>\nwhat is <term>\ndefine <term>\nhelp\nsay <phrase>\ngif [me] <phrase>\ntranslate <phrase>\nspace weather\nwolf <query>\n'
+                 + 'lunch [me]\ncalories <food>\nwhat is <term>\ndefine <term>\nhelp\nsay <phrase>\ngif [me] <phrase>\ntranslate <phrase>\nspace weather\n'
                  + 'metar [me] <airport code>\ninsult <name>\nrandom dog|cat|fox\nfortune\ncowsay <phrase>\nping\ndecide <thing1> or <thing2>\nxkcd\neight ball```\nπ'; // short_url
 }

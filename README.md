@@ -30,7 +30,7 @@ Building the bot is simple.  From the root folder, just run the following:
 
 ```bash
 $ npm install
-$ npm run-script build
+$ npm run build
 ```
 
 ## Running
@@ -38,5 +38,5 @@ $ npm run-script build
 After you have successfully built the bot, you can run it using the following:
 
 ```bash
-$ npm run-script run
+$ npm start
 ```

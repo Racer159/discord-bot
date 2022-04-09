@@ -40,3 +40,7 @@ After you have successfully built the bot, you can run it using the following:
 ```bash
 $ npm start
 ```
+
+## Note
+
+This bot has some NSFW features.  If you are concerned about this please review the code and fork if necessary for your use case.

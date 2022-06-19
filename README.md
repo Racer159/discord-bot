@@ -1,4 +1,7 @@
 # Discord-Bot
+
+[![CI](https://github.com/Racer159/discord-bot/actions/workflows/main.yml/badge.svg)](https://github.com/Racer159/discord-bot/actions/workflows/main.yml)
+
 A Discord bot written in TypeScript for use with you and your friends.
 
 ## Configuration
@@ -39,6 +42,14 @@ After you have successfully built the bot, you can run it using the following:
 
 ```bash
 $ npm start
+```
+
+## Linting
+
+If you make changes to the bot, linting can be ran with the following:
+
+```bash
+$ npm run lint
 ```
 
 ## Note

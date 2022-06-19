@@ -13,7 +13,7 @@ export async function calories(tokens: string[]): Promise<string> {
       const data = _.shuffle(response.hits);
       const cals = data[0].fields.nf_calories;
 
-      return "A " + tokens.join(' ') + " is " + cals + " calories.";;
+      return "A " + tokens.join(' ') + " is " + cals + " calories.";
     } else {
       return 'Sorry, couldn\'t find anything!';
     }

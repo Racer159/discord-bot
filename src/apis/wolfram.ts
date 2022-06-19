@@ -10,7 +10,7 @@ export async function search(tokens: string[]): Promise<string> {
     const response = await request('http://api.wolframalpha.com/v1/result?appid=' + WOLFRAMTOKEN + '&i=' + escape(tokens.join('+')));
 
     return response;
-  } catch (err) {
+  } catch (err: any) {
     if (err.statusCode === 429) {
       return RATELIMITRESPONSE;
     } else {

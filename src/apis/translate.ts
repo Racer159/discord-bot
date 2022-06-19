@@ -9,7 +9,7 @@ export async function say(tokens: string[]): Promise<string> {
     const response = JSON.parse(await request('http://api.funtranslations.com/translate/' + FUNTRANSLATIONSLANGUAGE + '.json?text=' + encodeURIComponent(tokens.join('+'))));
 
     return response.contents.translated;
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     if (err.statusCode === 429) {
         return RATELIMITRESPONSE;

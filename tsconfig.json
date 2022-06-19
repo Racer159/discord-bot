@@ -3,7 +3,11 @@
       "outDir": "./dist",
       "allowJs": true,
       "sourceMap": false,
-      "target": "es5"
+      "target": "es5",
+      "strict": true,
+      "paths": {
+        "*": [ "./src/@custom_types/*"]
+      }
     },
     "include": ["./src/**/*"]
   }

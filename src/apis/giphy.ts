@@ -18,7 +18,7 @@ export async function gif(tokens: string[]): Promise<string> {
     } else {
       return 'Sorry, couldn\'t find anything!';
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     if (err.statusCode === 429) {
       return RATELIMITRESPONSE;
@@ -37,7 +37,7 @@ export async function translate(tokens: string[]): Promise<string> {
     } else {
       return 'Sorry, couldn\'t find anything!';
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     if (err.statusCode === 429) {
       return RATELIMITRESPONSE;

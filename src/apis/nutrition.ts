@@ -17,7 +17,7 @@ export async function calories(tokens: string[]): Promise<string> {
     } else {
       return 'Sorry, couldn\'t find anything!';
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     if (err.statusCode === 429) {
         return RATELIMITRESPONSE;

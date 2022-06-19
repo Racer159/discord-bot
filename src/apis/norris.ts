@@ -11,7 +11,7 @@ export async function norris(): Promise<string>{
       return 'Sorry, there was an error recieving norris joke. No results found.';
     }
 
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     if (err.statusCode === 429) {
       return RATELIMITRESPONSE;

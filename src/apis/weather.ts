@@ -12,7 +12,7 @@ export async function metar(tokens: string[]): Promise<string> {
     } else {
       return 'Please provide a valid airport code.';
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     if (err.statusCode === 404) {
       return 'Sorry, that is an invalid airport code.';
@@ -33,7 +33,7 @@ export async function space(): Promise<string> {
     } else {
       return 'Sorry, there was an error recieving space weather. No results found.';
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     if (err.statusCode === 429) {
       return RATELIMITRESPONSE;

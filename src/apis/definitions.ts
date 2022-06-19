@@ -21,7 +21,7 @@ export async function urban(tokens: string[]): Promise<string> {
     } else {
       return 'I don\'t know what that is.';
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     if (err.statusCode === 429) {
         return RATELIMITRESPONSE;

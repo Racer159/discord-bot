@@ -12,7 +12,7 @@ export async function dog(): Promise<string> {
     } else {
       return 'No more dogs...  Looks like you killed them all!';
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     if (err.statusCode === 429) {
       return RATELIMITRESPONSE;
@@ -31,7 +31,7 @@ export async function cat(): Promise<string> {
     } else {
       return 'No more cats...  Good.';
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     if (err.statusCode === 429) {
       return RATELIMITRESPONSE;
@@ -50,7 +50,7 @@ export async function fox(): Promise<string> {
     } else {
       return 'What happened to the foxes?  None were found...';
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     if (err.statusCode === 429) {
       return RATELIMITRESPONSE;

@@ -26,12 +26,12 @@ const DISCORDTOKEN = config.get<string>('DISCORDTOKEN');
 const BOTNAME = config.get<string>('BOTNAME');
 
 client.on('ready', () => {
-  console.log(BOTNAME + ' is ready using user: ' + client.user.username);
+  console.log(BOTNAME + ' is ready using user: ' + client.user ? client.user?.username : 'nobody');
 });
 
 // Handle an incoming message
 client.on('message', async (msg) => {
-  if (msg.author.id !== client.user.id) {
+  if (client.user && msg.author.id !== client.user?.id) {
     let tokens = tokenizer.tokenize(msg.content);
     let reply = '';
 

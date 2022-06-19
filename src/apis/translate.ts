@@ -6,7 +6,7 @@ const RATELIMITRESPONSE = config.get<string>('RATELIMITRESPONSE');
 
 export async function say(tokens: string[]): Promise<string> {
   try {
-    const response = JSON.parse(await request('http://api.funtranslations.com/translate/' + FUNTRANSLATIONSLANGUAGE + '.json?text=' + encodeURIComponent(tokens.join('+'))));
+    const response = JSON.parse(await request('http://api.funtranslations.com/translate/' + FUNTRANSLATIONSLANGUAGE + '.json?text=' + encodeURIComponent(tokens.join(' '))));
 
     return response.contents.translated;
   } catch (err: any) {

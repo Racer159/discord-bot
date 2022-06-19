@@ -21,17 +21,17 @@ import norris = require('./apis/norris');
 
 // Setup the Tokenizer and Discord
 const tokenizer = new natural.WordTokenizer();
-const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILD_MESSAGES] });
+const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES] });
 const DISCORDTOKEN = config.get<string>('DISCORDTOKEN');
 const BOTNAME = config.get<string>('BOTNAME');
 
 client.on('ready', () => {
-  console.log(BOTNAME + ' is ready using user: ' + client.user ? client.user?.username : 'nobody');
+  console.log(BOTNAME + ' is ready using user: ' + client.user?.username);
 });
 
 // Handle an incoming message
-client.on('message', async (msg) => {
-  if (client.user && msg.author.id !== client.user?.id) {
+client.on('messageCreate', async (msg) => {
+  if (msg.author.id !== client.user?.id) {
     let tokens = tokenizer.tokenize(msg.content);
     let reply = '';
 

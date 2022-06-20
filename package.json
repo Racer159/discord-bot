@@ -29,7 +29,7 @@
   "devDependencies": {
     "typescript": "^4.7.3",
     "@types/node": "^18.0.0",
-    "@types/config": "0.0.38",
+    "@types/config": "0.0.41",
     "@types/natural": "^5.1.1",
     "@types/request-promise": "^4.1.47",
     "@types/underscore": "^1.11.4",

@@ -14,6 +14,8 @@ export function insult(tokens: string[], userId: string): string {
   if (tokens.length > 0) {
     if (USERIDREGEX.test(tokens[0])) {
       targetName = '<@' + tokens[0] + '>';
+    } else if (tokens.indexOf('jesus') > -1 || tokens.indexOf('christ') > -1 || tokens.indexOf('god') > -1) {
+      targetName = '<@' + userId + '>';
     } else {
       targetName = tokens.map(token => token.charAt(0).toUpperCase() + token.slice(1)).join(' ');
     }

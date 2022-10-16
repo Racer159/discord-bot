@@ -1,13 +1,17 @@
 {
-    "compilerOptions": {
-      "outDir": "./dist",
-      "allowJs": true,
-      "sourceMap": false,
-      "target": "es5",
-      "strict": true,
-      "paths": {
-        "*": [ "./src/@custom_types/*"]
-      }
-    },
-    "include": ["./src/**/*"]
-  }
+  "compilerOptions": {
+    "outDir": "./dist",
+    "allowJs": true,
+    "sourceMap": false,
+    "target": "es2020",
+    "strict": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "paths": {
+      "*": [ "./src/@custom_types/*"]
+    }
+  },
+  "include": ["./src/**/*"]
+}

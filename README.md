@@ -16,7 +16,7 @@ Configuration is located in the `config/` dirrectory and can be changed accordin
     "GIPHYTOKEN": "",
     // The nutritionix token to lookup calorie information
     "NUTRITIONIXTOKEN": "",
-    // The wolfram alpha token to lookup information
+    // The wolfram alpha token to lookup wolfram information
     "WOLFRAMTOKEN": "",
     // The name to which your bot will respond in the chat
     "BOTNAME": "bot",

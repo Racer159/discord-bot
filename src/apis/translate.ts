@@ -1,20 +1,24 @@
-import request = require('request-promise');
-import config = require('config');
+import fetch from 'node-fetch';
+import config from 'config';
+import * as errors from '../util/errors.js';
+import { FunTranslationResponse } from '../types/response.js';
 
 const FUNTRANSLATIONSLANGUAGE = config.get<string>('FUNTRANSLATIONSLANGUAGE');
 const RATELIMITRESPONSE = config.get<string>('RATELIMITRESPONSE');
 
 export async function say(tokens: string[]): Promise<string> {
   try {
-    const response = JSON.parse(await request('http://api.funtranslations.com/translate/' + FUNTRANSLATIONSLANGUAGE + '.json?text=' + encodeURIComponent(tokens.join(' '))));
+    const response = await fetch('https://api.funtranslations.com/translate/' + FUNTRANSLATIONSLANGUAGE + '.json?text=' + encodeURIComponent(tokens.join(' ')));
 
-    return response.contents.translated;
-  } catch (err: any) {
-    console.error(err);
-    if (err.statusCode === 429) {
-        return RATELIMITRESPONSE;
+    if (response.ok) {
+      const data = (await response.json()) as FunTranslationResponse;
+      return data.contents.translated;
+    } else if (response.status === 429) {
+      return RATELIMITRESPONSE;
     } else {
-        return 'An error with the Fun Translations API occurred. ' + (err.error ? err.error : 'Check the logs for more information');
+      throw response;
     }
+  } catch (e) {
+    return errors.handleError('Fun Translations API', e);
   }
 }

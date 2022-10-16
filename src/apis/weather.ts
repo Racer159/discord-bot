@@ -1,5 +1,7 @@
-import request = require('request-promise');
-import config = require('config');
+import fetch from 'node-fetch';
+import config from 'config';
+import * as errors from '../util/errors.js';
+import { SpaceWeatherResponse } from '../types/response.js';
 
 const RATELIMITRESPONSE = config.get<string>('RATELIMITRESPONSE');
 
@@ -7,38 +9,42 @@ export async function metar(tokens: string[]): Promise<string> {
   try {
     if (tokens.length > 0) {
       const airportCode = tokens[0].toUpperCase();
+      const response = await fetch('https://tgftp.nws.noaa.gov/data/observations/metar/stations/' + encodeURIComponent(airportCode) + '.TXT');
 
-      return await request('http://tgftp.nws.noaa.gov/data/observations/metar/stations/' + escape(airportCode) + '.TXT');
+      if (response.ok) {
+        return await response.text();
+      } else if (response.status === 404) {
+        return 'Sorry, that is an invalid airport code.';
+      } else if (response.status === 429) {
+        return RATELIMITRESPONSE;
+      } else {
+        throw response;
+      }
     } else {
       return 'Please provide a valid airport code.';
     }
-  } catch (err: any) {
-    console.error(err);
-    if (err.statusCode === 404) {
-      return 'Sorry, that is an invalid airport code.';
-    } else if (err.statusCode === 429) {
-      return RATELIMITRESPONSE;
-    } else {
-      return 'An error with the NOAA METAR API occurred. ' + (err.error ? err.error : 'Check the logs for more information');
-    }
+  } catch (e) {
+    return errors.handleError('NOAA METAR API', e);
   }
 }
 
 export async function space(): Promise<string> {
   try {
-    const response = JSON.parse(await request('http://services.swpc.noaa.gov/products/alerts.json'));
+    const response = await fetch('https://services.swpc.noaa.gov/products/alerts.json');
 
-    if (response.length) {
-      return response[0].message;
-    } else {
-      return 'Sorry, there was an error recieving space weather. No results found.';
-    }
-  } catch (err: any) {
-    console.error(err);
-    if (err.statusCode === 429) {
+    if (response.ok) {
+      const data = (await response.json()) as Array<SpaceWeatherResponse>;
+      if (data.length) {
+        return data[0].message;
+      } else {
+        return 'Sorry, there was an error recieving space weather. No results found.';
+      }
+    } else if (response.status === 429) {
       return RATELIMITRESPONSE;
     } else {
-      return 'An error with the NOAA Space Weather API occurred. ' + (err.error ? err.error : 'Check the logs for more information');
+      throw response;
     }
+  } catch (e) {
+    return errors.handleError('NOAA Space Weather API', e);
   }
 }

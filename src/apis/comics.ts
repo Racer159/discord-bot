@@ -1,23 +1,23 @@
-import request = require('request-promise');
-import config = require('config');
+import fetch from 'node-fetch';
+import config from 'config';
+import * as errors from '../util/errors.js';
+import { XKCDJSONResponse } from '../types/response.js';
 
 const RATELIMITRESPONSE = config.get<string>('RATELIMITRESPONSE');
 
 export async function xkcd(): Promise<string> {
   try {
-    const response = JSON.parse(await request('https://xkcd.com/info.0.json'));
+    const response = await fetch('https://xkcd.com/info.0.json');
 
-    if (response.img) {
-      return response.img;
-    } else {
-      return 'Sorry, couldn\'t find anything!';
-    }
-  } catch (err: any) {
-    console.error(err);
-    if (err.statusCode === 429) {
+    if (response.ok) {
+      const data = (await response.json()) as XKCDJSONResponse;
+      return data.img;
+    } else if (response.status === 429) {
       return RATELIMITRESPONSE;
     } else {
-      return 'An error with the XKCD API occurred. ' + (err.error ? err.error : 'Check the logs for more information');
+      throw response;
     }
+  } catch (e) {
+    return errors.handleError('XKCD API', e);
   }
 }

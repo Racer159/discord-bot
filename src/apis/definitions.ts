@@ -1,32 +1,35 @@
-import request = require('request-promise');
-import _ = require('underscore');
-import config = require('config');
+import fetch from 'node-fetch';
+import config from 'config';
+import * as errors from '../util/errors.js';
+import { UrbanDictionaryResponse } from '../types/response.js';
+import * as utilities from '../util/utils.js';
 
 const RATELIMITRESPONSE = config.get<string>('RATELIMITRESPONSE');
 
 export async function urban(tokens: string[]): Promise<string> {
   try {
-    const response = JSON.parse(await request('http://api.urbandictionary.com/v0/define?term=' + escape(tokens.join('+'))));
+    const response = await fetch('https://api.urbandictionary.com/v0/define?term=' + encodeURIComponent(tokens.join('+')));
 
-    console.log(response);
-    if (response.list && response.list.length) {
-        const list = _.shuffle(response.list);
-        let definition = list[0].definition;
+    if (response.ok) {
+      const data = (await response.json()) as UrbanDictionaryResponse;
+      if (data.list && data.list.length) {
+        utilities.shuffle(data.list);
+          let definition = data.list[0].definition;
 
-        if (definition.length > 450) {
-            definition = definition.substring(0, 439) + ' (cont) ...';
-        }
+          if (definition.length > 450) {
+              definition = definition.substring(0, 439) + ' (cont) ...';
+          }
 
-        return definition;
+          return definition;
+      } else {
+        return 'I don\'t know what that is.';
+      }
+    } else if (response.status === 429) {
+      return RATELIMITRESPONSE;
     } else {
-      return 'I don\'t know what that is.';
+      throw response;
     }
-  } catch (err: any) {
-    console.error(err);
-    if (err.statusCode === 429) {
-        return RATELIMITRESPONSE;
-    } else {
-        return 'An error with the Urban Dictionary API occurred. ' + (err.error ? err.error : 'Check the logs for more information');
-    }
+  } catch (e) {
+    return errors.handleError('Urban Dictionary API', e);
   }
 }

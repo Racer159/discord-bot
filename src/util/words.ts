@@ -1,6 +1,6 @@
-import natural = require('natural');
+import natural from 'natural';
 
-const tokenizer = new natural.WordTokenizer();
+export const tokenizer = new natural.WordTokenizer();
 
 export function check(triggerPhrase: string, tokens: string[]): boolean {
   const newTokens = tokenizer.tokenize( triggerPhrase );

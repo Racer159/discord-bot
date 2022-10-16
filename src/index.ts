@@ -1,27 +1,24 @@
 // Import External Libraries
-import Discord = require('discord.js');
-import natural = require('natural');
-import fortune = require('fortune-teller');
-import cowsay = require('cowsay');
-import _ = require('underscore');
-import config = require('config');
+import * as Discord from 'discord.js';
+import fortune from 'fortune-teller';
+import * as cowsay from 'cowsay';
+import config from 'config';
 
-// Import Internal Moduels
-import words = require('./util/tokenizer');
-import internal = require('./apis/internal');
-import animals = require('./apis/animals');
-import comics = require('./apis/comics');
-import definitions = require('./apis/definitions');
-import giphy = require('./apis/giphy');
-import nutrition = require('./apis/nutrition');
-import translate = require('./apis/translate');
-import weather = require('./apis/weather');
-import wolfram = require('./apis/wolfram');
-import norris = require('./apis/norris');
+// Import Internal Modules
+import * as words from './util/words.js';
+import * as internal from './apis/internal.js';
+import * as animals from './apis/animals.js';
+import * as comics from './apis/comics.js';
+import * as definitions from './apis/definitions.js';
+import * as giphy from './apis/giphy.js';
+import * as nutrition from './apis/nutrition.js';
+import * as translate from './apis/translate.js';
+import * as weather from './apis/weather.js';
+import * as wolfram from './apis/wolfram.js';
+import * as norris from './apis/norris.js';
 
-// Setup the Tokenizer and Discord
-const tokenizer = new natural.WordTokenizer();
-const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES] });
+// Setup Discord
+const client = new Discord.Client({ intents: ['Guilds', 'GuildMessages', 'MessageContent'] });
 const DISCORDTOKEN = config.get<string>('DISCORDTOKEN');
 const BOTNAME = config.get<string>('BOTNAME');
 
@@ -32,65 +29,65 @@ client.on('ready', () => {
 // Handle an incoming message
 client.on('messageCreate', async (msg) => {
   if (msg.author.id !== client.user?.id) {
-    let tokens = tokenizer.tokenize(msg.content);
+    let tokens = words.tokenizer.tokenize(msg.content);
     let reply = '';
 
-    tokens = _.map(tokens, function(t) { return t.toLowerCase(); });
+    tokens = tokens.map(function(t) { return t.toLowerCase(); });
 
-    if (tokens.indexOf(BOTNAME) == 0) {
+    if (tokens[0] === BOTNAME || tokens[0] === client.user?.id) {
       console.log('processing message from: ' + msg.author.username);
+      tokens = tokens.splice(1);
 
-      if (words.check(`${BOTNAME} ping`, tokens )) {
+      if (words.check(`ping`, tokens )) {
         reply = 'pong';
-      } else if (words.check(`${BOTNAME} xkcd`, tokens )) {
+      } else if (words.check(`xkcd`, tokens )) {
         reply = await comics.xkcd();
-      } else if (words.check(`${BOTNAME} eight ball`, tokens )) {
+      } else if (words.check(`eight ball`, tokens )) {
         reply = internal.eightball();
-      } else if (words.check(`${BOTNAME} what is`, tokens ) || words.check(`${BOTNAME} define`, tokens )) {
-        if (tokens.length > 2 && tokens[2] === 'is') { tokens = tokens.splice(3); } else { tokens = tokens.splice(2); }
+      } else if (words.check(`what is`, tokens ) || words.check(`define`, tokens )) {
+        if (tokens.length > 1 && tokens[1] === 'is') { tokens = tokens.splice(2); } else { tokens = tokens.splice(1); }
         reply = await definitions.urban(tokens);
-      } else if (words.check(`${BOTNAME} gif me`, tokens ) || words.check(`${BOTNAME} gif`, tokens )) {
-        if (tokens.length > 2 && tokens[2] === 'me') { tokens = tokens.splice(3); } else { tokens = tokens.splice(2); }
+      } else if (words.check(`gif me`, tokens ) || words.check(`gif`, tokens )) {
+        if (tokens.length > 1 && tokens[1] === 'me') { tokens = tokens.splice(2); } else { tokens = tokens.splice(1); }
         reply = await giphy.gif(tokens);
-      } else if (words.check(`${BOTNAME} translate`, tokens )) {
-        tokens = tokens.splice(2);
+      } else if (words.check(`translate`, tokens )) {
+        tokens = tokens.splice(1);
         reply = await giphy.translate(tokens);
-      } else if (words.check(`${BOTNAME} lunch`, tokens )) {
+      } else if (words.check(`lunch`, tokens )) {
         reply = internal.lunch();
-      } else if (words.check(`${BOTNAME} calories`, tokens )) {
-        tokens = tokens.splice(2);
+      } else if (words.check(`calories`, tokens )) {
+        tokens = tokens.splice(1);
         reply = await nutrition.calories(tokens);
-      } else if (words.check(`${BOTNAME} metar me`, tokens ) || words.check(`${BOTNAME} metar`, tokens )) {
-        if (tokens.length > 2 && tokens[2] === 'me') { tokens = tokens.splice(3); } else { tokens = tokens.splice(2); }
+      } else if (words.check(`metar me`, tokens ) || words.check(`metar`, tokens )) {
+        if (tokens.length > 1 && tokens[1] === 'me') { tokens = tokens.splice(2); } else { tokens = tokens.splice(1); }
         reply = await weather.metar(tokens);
-      } else if (words.check(`${BOTNAME} space weather`, tokens )) {
+      } else if (words.check(`space weather`, tokens )) {
         reply = await weather.space();
-      } else if (words.check(`${BOTNAME} help`, tokens )) {
+      } else if (words.check(`help`, tokens )) {
         reply = internal.help();
-      } else if (words.check(`${BOTNAME} fortune`, tokens )) {
+      } else if (words.check(`fortune`, tokens )) {
         reply = fortune.fortune();
-      } else if (words.check(`${BOTNAME} cowsay`, tokens )) {
-        tokens = tokens.splice(2);
+      } else if (words.check(`cowsay`, tokens )) {
+        tokens = tokens.splice(1);
         reply = '```' + cowsay.say({ text: tokens.join(' ') }) + '```';
-      } else if (words.check(`${BOTNAME} say`, tokens )) {
-        tokens = tokens.splice(2);
+      } else if (words.check(`say`, tokens )) {
+        tokens = tokens.splice(1);
         reply = await translate.say(tokens);
-      } else if (words.check(`${BOTNAME} random dog`, tokens )) {
+      } else if (words.check(`random dog`, tokens )) {
         reply = await animals.dog();
-      } else if (words.check(`${BOTNAME} random cat`, tokens )) {
+      } else if (words.check(`random cat`, tokens )) {
         reply = await animals.cat();
-      } else if (words.check(`${BOTNAME} random fox`, tokens )) {
+      } else if (words.check(`random fox`, tokens )) {
         reply = await animals.fox();
-      } else if (words.check(`${BOTNAME} norris`, tokens )){
+      } else if (words.check(`norris`, tokens )){
         reply = await norris.norris();
-      } else if (words.check(`${BOTNAME} insult`, tokens )) {
-        tokens = tokens.splice(2);
-        reply = internal.insult(tokens, msg.author.username);
-      } else if (words.check(`${BOTNAME} decide`, tokens )) {
-        tokens = tokens.splice(2);
+      } else if (words.check(`insult`, tokens )) {
+        tokens = tokens.splice(1);
+        reply = internal.insult(tokens, msg.author.id);
+      } else if (words.check(`decide`, tokens )) {
+        tokens = tokens.splice(1);
         reply = internal.decide(tokens);
       }  else {
-        tokens = tokens.splice(1);
         reply = await wolfram.search(tokens);
       }
 

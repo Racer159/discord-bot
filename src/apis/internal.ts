@@ -1,6 +1,7 @@
-import config = require('config');
+import config from 'config';
 
 const BOTNAME = config.get<string>('BOTNAME');
+const USERIDREGEX = new RegExp("^[0-9]{18}$");
 
 export function lunch(): string {
   const preText = ['Get yourself some', 'Try some', 'Why not some', 'How about', 'Try', 'You should get some'];
@@ -8,12 +9,16 @@ export function lunch(): string {
   return preText[Math.floor(Math.random() * preText.length)] + ' ' + lunchOptions[Math.floor(Math.random() * lunchOptions.length)] + '!';
 }
 
-export function insult(tokens: string[], username: string): string {
+export function insult(tokens: string[], userId: string): string {
   let targetName = '';
   if (tokens.length > 0) {
-    targetName = tokens.map(token => token.charAt(0).toUpperCase() + token.slice(1)).join(' ');
+    if (USERIDREGEX.test(tokens[0])) {
+      targetName = '<@' + tokens[0] + '>';
+    } else {
+      targetName = tokens.map(token => token.charAt(0).toUpperCase() + token.slice(1)).join(' ');
+    }
   } else {
-    targetName = username.charAt(0).toUpperCase() + username.slice(1);
+    targetName = '<@' + userId + '>';
   }
 
   const groupOne = ['lazy', 'stupid', 'insecure', 'idiotic', 'slimy',

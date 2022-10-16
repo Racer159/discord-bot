@@ -1,61 +1,57 @@
-import request = require('request-promise');
-import config = require('config');
+import fetch from 'node-fetch';
+import config from 'config';
+import * as errors from '../util/errors.js';
+import { RandomCatJSONResponse, RandomDogJSONResponse, RandomFoxJSONResponse } from '../types/response.js';
 
 const RATELIMITRESPONSE = config.get<string>('RATELIMITRESPONSE');
 
 export async function dog(): Promise<string> {
   try {
-    const response = JSON.parse(await request('https://random.dog/woof.json?ref=apilist.fun'));
+    const response = await fetch('https://random.dog/woof.json');
 
-    if (response.url) {
-      return response.url;
-    } else {
-      return 'No more dogs...  Looks like you killed them all!';
-    }
-  } catch (err: any) {
-    console.error(err);
-    if (err.statusCode === 429) {
+    if (response.ok) {
+      const data = (await response.json()) as RandomDogJSONResponse;
+      return data.url;
+    } else if (response.status === 429) {
       return RATELIMITRESPONSE;
     } else {
-      return 'An error with the Random Dog API occurred. ' + (err.error ? err.error : 'Check the logs for more information');
+      throw response;
     }
+  } catch (e) {
+    return errors.handleError('Random Dog API', e);
   }
 }
 
 export async function cat(): Promise<string> {
   try {
-    const response = JSON.parse(await request('https://aws.random.cat/meow?ref=apilist.fun'));
+    const response = await fetch('https://aws.random.cat/meow');
 
-    if (response.file) {
-      return response.file;
-    } else {
-      return 'No more cats...  Good.';
-    }
-  } catch (err: any) {
-    console.error(err);
-    if (err.statusCode === 429) {
+    if (response.ok) {
+      const data = (await response.json()) as RandomCatJSONResponse;
+      return data.file;
+    } else if (response.status === 429) {
       return RATELIMITRESPONSE;
     } else {
-      return 'An error with the Random Cat API occurred. ' + (err.error ? err.error : 'Check the logs for more information');
+      throw response;
     }
+  } catch (e) {
+    return errors.handleError('Random Cat API', e);
   }
 }
 
 export async function fox(): Promise<string> {
   try {
-    const response = JSON.parse(await request('https://randomfox.ca/floof/?ref=apilist.fun'));
+    const response = await fetch('https://randomfox.ca/floof/');
 
-    if (response.image) {
-      return response.image;
-    } else {
-      return 'What happened to the foxes?  None were found...';
-    }
-  } catch (err: any) {
-    console.error(err);
-    if (err.statusCode === 429) {
+    if (response.ok) {
+      const data = (await response.json()) as RandomFoxJSONResponse;
+      return data.image;
+    } else if (response.status === 429) {
       return RATELIMITRESPONSE;
     } else {
-      return 'An error with the Random Fox API occurred. ' + (err.error ? err.error : 'Check the logs for more information');
+      throw response;
     }
+  } catch (e) {
+    return errors.handleError('Random Fox API', e);
   }
 }
